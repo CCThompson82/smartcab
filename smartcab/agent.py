@@ -12,7 +12,7 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
 
         # TODO: Initialize any additional variables here
-        state = ((lights: inputs['lights']), ('oncoming': inputs['oncoming']))
+        state = ((inputs['lights']), (inputs['oncoming']))
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
