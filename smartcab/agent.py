@@ -28,7 +28,7 @@ class LearningAgent(Agent):
         self.state = {"Light" : 'red'}
 
         # TODO: Select action according to your policy
-        action = random.choice(['forward','right','left',None])
+        action = self.next_waypoint
 
         # Execute action and get reward
         reward = self.env.act(self, action)
