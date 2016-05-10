@@ -25,7 +25,7 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
-        self.state = (("lights",'green'), ("oncoming",None), ("left",None))
+        self.state = (("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
         action = self.next_waypoint #How does the next_waypoint get decided??
