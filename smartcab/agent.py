@@ -12,7 +12,7 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
 
         # TODO: Initialize any additional variables here
-        state = self.env.sense(self)
+        #self.env.sense(self)
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -26,7 +26,7 @@ class LearningAgent(Agent):
 
         # TODO: Update state
         state = inputs
-
+        print state
         # TODO: Select action according to your policy
         action = self.next_waypoint #How does the next_waypoint get decided??
 
