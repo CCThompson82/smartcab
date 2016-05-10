@@ -25,14 +25,13 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
-        self.utility =+ reward
 
         # TODO: Select action according to your policy
         action = random.choice(['forward','right','left',None])
 
         # Execute action and get reward
         reward = self.env.act(self, action)
-
+        self.utility = utility + reward
         # TODO: Learn policy based on state, action, reward
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}, utility = {}".format(deadline, inputs, action, reward, utility)  # [debug]
