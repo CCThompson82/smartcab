@@ -26,6 +26,10 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
+        try :
+            reward
+        except :
+            reward = 0
         self.state = (("R(s)", reward),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
