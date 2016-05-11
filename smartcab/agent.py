@@ -10,7 +10,7 @@ class LearningAgent(Agent):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
-        self.state = (("R(s)", None),("light",None), ("oncoming", None), ("left",None)
+        #self.state = (("R(s)", None),("light",None), ("oncoming", None), ("left",None)
         # TODO: Initialize any additional variables here
         #self.q_table = {}
 
@@ -18,6 +18,7 @@ class LearningAgent(Agent):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
         #dont delete qtable values if re-running simulations ??
+
     def update(self, t):
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
