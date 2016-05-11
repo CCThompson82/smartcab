@@ -10,9 +10,9 @@ class LearningAgent(Agent):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
-
+        self.state = (("R(s)", None),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
         # TODO: Initialize any additional variables here
-        #empty q-table goes here??
+        self.q_table = {}
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -25,7 +25,7 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
-        self.state = (("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
+        self.state = (("R(s)", None),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
         action = random.choice([None, 'forward', 'left', 'right'])
@@ -34,7 +34,7 @@ class LearningAgent(Agent):
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
-
+        q_table.append()
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
