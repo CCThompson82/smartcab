@@ -34,7 +34,7 @@ class LearningAgent(Agent):
 
         # Execute action and get reward
         reward = self.env.act(self, action)
-        self.state = (("R(s)", reward),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
+        
         # TODO: Learn policy based on state, action, reward
         #q_table.append()
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
