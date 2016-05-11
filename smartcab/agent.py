@@ -12,7 +12,7 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
         self.state = (("R(s)", None),("light",None), ("oncoming", None), ("left",None)
         # TODO: Initialize any additional variables here
-        self.q_table = {}
+        #self.q_table = {}
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -34,7 +34,7 @@ class LearningAgent(Agent):
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
-        q_table.append()
+        #q_table.append()
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
