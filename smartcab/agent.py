@@ -12,7 +12,7 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
 
         # TODO: Initialize any additional variables here
-        #self.q_table = {}
+        Qtable = {}
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -27,16 +27,23 @@ class LearningAgent(Agent):
 
         # TODO: Update state
 
-        self.state = (("R(s)", 0),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
+        self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
-        action = random.choice([None, 'forward', 'left', 'right'])
+        if Qtable.has_key(self.state) :  #check if state has been encountered before
+            action_q = Qtable[self.state]
+            action = max(action_q, key = action_q.get)  #look for the argmax action
+        else :
+            Qtable.update(self.state : {None : 0, 'forward' : 0, 'left' : 0 , 'right' : 0})
+            action = random.choice([None, 'forward', 'left', 'right'])
 
         # Execute action and get reward
         reward = self.env.act(self, action)
-        
+
         # TODO: Learn policy based on state, action, reward
-        #q_table.append()
+        Q_hat = (1-0.5)*Qtable[self.state][action] + (0.5 * (reward + (0 * 0)))  #alpha = 0.5 to start; gamma = 0
+        """How does one know what the next state will be in order to use Q-learning convergence??)"""
+        Qtable[self.state][action] = Q_hat
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
