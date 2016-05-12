@@ -13,6 +13,9 @@ class LearningAgent(Agent):
 
         # TODO: Initialize any additional variables here
         self.Qtable = {}
+        self.epsilon = 1
+        self.gamma = 0
+        self.alpha = 0.5
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -42,7 +45,7 @@ class LearningAgent(Agent):
 
         # TODO: Learn policy based on state, action, reward
         Q_state_action_prime = 0 # """How does one know what the next state will be in order to use Q-learning convergence??)"""
-        Q_hat = (1-0.5)*Qtable[self.state][action] + (0.5 * (reward + (0 * Q_state_action_prime)))  #alpha = 0.5 to start; gamma = 0
+        Q_hat = (1-self.alpha)*Qtable[self.state][action] + (self.alpha * (reward + (self.gamma * Q_state_action_prime))) 
         Qtable[self.state][action] = Q_hat
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
