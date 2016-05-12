@@ -32,7 +32,7 @@ class LearningAgent(Agent):
         Qtable = self.Qtable
         # TODO: Update state
         self.counter += 1
-        self.epsilon = 1 / (1+(math.exp(-(self.counter)))) #redefine epsilon as a logistic function
+        self.epsilon = 0.75 #1 / (1+(math.exp(-(self.counter)))) #redefine epsilon as a logistic function
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
