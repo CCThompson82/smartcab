@@ -17,6 +17,7 @@ class LearningAgent(Agent):
         self.epsilon = 0
         self.gamma = 0
         self.alpha = 0.5
+        self.counter = 0
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -30,7 +31,8 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
         Qtable = self.Qtable
         # TODO: Update state
-        self.epsilon = 1 / 1+(math.exp(-(t-50))) #redefine epsilon as a logistic function
+        self.counter += 1
+        self.epsilon = 1 / (1+(math.exp(-(self.counter-50)))) #After 50 movements, random actions will be occuring at 50%
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
