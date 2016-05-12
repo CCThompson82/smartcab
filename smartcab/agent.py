@@ -12,7 +12,7 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
 
         # TODO: Initialize any additional variables here
-        Qtable = {}
+        self.Qtable = {}
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -24,7 +24,7 @@ class LearningAgent(Agent):
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
         deadline = self.env.get_deadline(self)
-
+        Qtable = self.Qtable
         # TODO: Update state
 
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
@@ -34,7 +34,7 @@ class LearningAgent(Agent):
             action_q = Qtable[self.state]
             action = max(action_q, key = action_q.get)  #look for the argmax action
         else :
-            Qtable.update(self.state : {None : 0, 'forward' : 0, 'left' : 0 , 'right' : 0})
+            Qtable.update({self.state : {None : 0, 'forward' : 0, 'left' : 0 , 'right' : 0}})
             action = random.choice([None, 'forward', 'left', 'right'])
 
         # Execute action and get reward
