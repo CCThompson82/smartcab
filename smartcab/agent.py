@@ -17,6 +17,7 @@ class LearningAgent(Agent):
         self.epsilon = 0
         self.gamma = 0
         self.alpha = 0.5
+        self.counter = 0
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -32,7 +33,7 @@ class LearningAgent(Agent):
         # TODO: Update state
         self.epsilon = 1 / 1+(math.exp(-(t-50))) #redefine epsilon as a logistic function
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
-
+        self.counter += 1
         # TODO: Select action according to your policy
         if Qtable.has_key(self.state) :  #check if state has been encountered before
             action_q = Qtable[self.state]
@@ -52,7 +53,7 @@ class LearningAgent(Agent):
         Q_hat = (1-self.alpha)*Qtable[self.state][action] + (self.alpha * (reward + (self.gamma * Q_state_action_prime)))
         Qtable[self.state][action] = Q_hat
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
-
+        print len(Qtable)
 
 def run():
     """Run the agent for a finite number of trials."""
