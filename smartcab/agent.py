@@ -2,6 +2,7 @@ import random
 from environment import Agent, Environment
 from planner import RoutePlanner
 from simulator import Simulator
+import math
 
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
@@ -13,7 +14,7 @@ class LearningAgent(Agent):
 
         # TODO: Initialize any additional variables here
         self.Qtable = {}
-        self.epsilon = 1
+        self.epsilon = 0
         self.gamma = 0
         self.alpha = 0.5
 
@@ -29,13 +30,16 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
         Qtable = self.Qtable
         # TODO: Update state
-
+        self.epsilon = 1 / 1+(math.exp(-(t-50))) #redefine epsilon as a logistic function
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
         # TODO: Select action according to your policy
         if Qtable.has_key(self.state) :  #check if state has been encountered before
             action_q = Qtable[self.state]
-            action = max(action_q, key = action_q.get)  #look for the argmax action
+            if random.random() < self.epsilon :
+                action = max(action_q, key = action_q.get)  #look for the argmax action
+            else :
+                action = random.choice([None, 'forward', 'left', 'right'])
         else :
             Qtable.update({self.state : {None : 0, 'forward' : 0, 'left' : 0 , 'right' : 0}})
             action = random.choice([None, 'forward', 'left', 'right'])
@@ -45,7 +49,7 @@ class LearningAgent(Agent):
 
         # TODO: Learn policy based on state, action, reward
         Q_state_action_prime = 0 # """How does one know what the next state will be in order to use Q-learning convergence??)"""
-        Q_hat = (1-self.alpha)*Qtable[self.state][action] + (self.alpha * (reward + (self.gamma * Q_state_action_prime))) 
+        Q_hat = (1-self.alpha)*Qtable[self.state][action] + (self.alpha * (reward + (self.gamma * Q_state_action_prime)))
         Qtable[self.state][action] = Q_hat
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
@@ -60,7 +64,7 @@ def run():
 
     # Now simulate it
     sim = Simulator(e, update_delay=1.0)  # reduce update_delay to speed up simulation
-    sim.run(n_trials=2)  # press Esc or close pygame window to quit
+    sim.run(n_trials=20)  # press Esc or close pygame window to quit
 
 
 if __name__ == '__main__':
