@@ -24,7 +24,7 @@ class LearningAgent(Agent):
         the 'best' action, gradually.  However, I have decided to limit the chance
         of choosing the 'best' action at 90%, as to introduce opportunity to break
         free from any local minimum Q_value(state, action) that may be present"""
-        self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-200)))) #alpha ranges from 1 to 0.25
+        self.alpha = 0.5 #1 - ( 0.75 / (1 + math.exp(-(self.counter-200)))) #alpha ranges from 1 to 0.25
         """The learning rate will start at 1 and move towards 0.25 as the number of steps increases.
         A steep drop in learning rate will occur at about 200 steps."""
         self.reward_list = []
@@ -38,8 +38,8 @@ class LearningAgent(Agent):
         #Remember the previous state
         if self.steps_counter != 0 :
             state_previous = self.state
-            reward_previous = reward_list[-1]
-            action_previous = action_list[-1]
+            reward_previous = self.reward_list[-1]
+            action_previous = self.action_list[-1]
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
@@ -70,7 +70,7 @@ class LearningAgent(Agent):
         # TODO: Learn policy based on state, action, reward
         if self.steps_counter != 0 :
             """Q_hat = old Q_hat * (1-alpha) + new Q_value * (alpha) """
-            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] + (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state]))))
+            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] + (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state].values()))))
             Qtable[state_previous][action_previous] = Q_hat
 
         self.steps_counter += 1
