@@ -36,7 +36,7 @@ class LearningAgent(Agent):
         if self.t ==0 :
             pass
         else:
-            state_prime = self.state
+            state_previous = self.state
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
         self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-50)))) #alpha ranges from 1 to 0.25
         # TODO: Select action according to your policy
