@@ -14,33 +14,36 @@ class LearningAgent(Agent):
 
         # TODO: Initialize any additional variables here
         self.Qtable = {}
-        self.epsilon = 0
-        self.gamma = 0
-        self.alpha = 0.5
-        self.counter = 0
-
+        self.counter = 0  #counts number of steps learned
+        self.gamma = 0  #discounting rate of future rewards
+        self.epsilon = 0.9 / (1+(math.exp(-(self.counter-50))))
+        """The Logistic function ranges from 0 to 0.9 as the number of total
+        steps increases during the learning process.  At about 50 steps, the 'logistic'
+        part of the curve will be implemented and random actions will give way to
+        the 'best' action, gradually.  However, I have decided to limit the chance
+        of choosing the 'best' action at 90%, as to introduce opportunity to break
+        free from any local minimum Q_value(state, action) that may be present"""
+        self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-200)))) #alpha ranges from 1 to 0.25
+        """The learning rate will start at 1 and move towards 0.25 as the number of steps increases.
+        A steep drop in learning rate will occur at about 200 steps."""
     def reset(self, destination=None):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
-        #dont delete qtable values if re-running simulations ??
 
     def update(self, t):
-        # Gather inputs
-        self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
-        inputs = self.env.sense(self)
-        deadline = self.env.get_deadline(self)
-        Qtable = self.Qtable
-        # TODO: Update state
-        self.counter += 1
-        self.epsilon = 0.9 / (1+(math.exp(-(self.counter-50)))) #After 50 movements, random actions will be occuring at 50%
-        self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-50)))) #alpha ranges from 1 to 0.25
-
         #Remember the previous state
         if self.t != 0 :
             state_previous = self.state
             reward_previous = reward
             action_previous = action
+        # Gather inputs
+        self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
+        inputs = self.env.sense(self)
+        deadline = self.env.get_deadline(self)
+        Qtable = self.Qtable
+        self.counter += 1
 
+        # TODO: Update state
         #Sense the current state:
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
 
