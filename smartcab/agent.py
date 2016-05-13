@@ -33,17 +33,22 @@ class LearningAgent(Agent):
         # TODO: Update state
         self.counter += 1
         self.epsilon = 0.9 / (1+(math.exp(-(self.counter-50)))) #After 50 movements, random actions will be occuring at 50%
-        if self.t ==0 :
-            pass
-        else:
-            state_previous = self.state
-        self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
         self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-50)))) #alpha ranges from 1 to 0.25
+
+        #Remember the previous state
+        if self.t != 0 :
+            state_previous = self.state
+            reward_previous = reward
+            action_previous = action
+
+        #Sense the current state:
+        self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
+
         # TODO: Select action according to your policy
         if Qtable.has_key(self.state) :  #check if state has been encountered before
             action_q = Qtable[self.state]
-            if random.random() < self.epsilon :
-                action = max(action_q, key = action_q.get)  #look for the argmax action
+            if random.random() < self.epsilon :  #choose 'best' if epsilon is > than random float
+                action = max(action_q, key = action_q.get)  #look for the argmax action; what if there are two actions with same reward?  Need a count command
             else :
                 action = random.choice([None, 'forward', 'left', 'right'])
         else :
@@ -54,9 +59,11 @@ class LearningAgent(Agent):
         reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
-        Q_state_action_prime = 0 # """How does one know what the next state will be in order to use Q-learning convergence??)"""
-        Q_hat = (1-self.alpha)*Qtable[self.state][action] + (self.alpha * (reward + (self.gamma * Q_state_action_prime)))
-        Qtable[self.state][action] = Q_hat
+        if state.t != 0 :
+            """Q_hat = old Q_hat * (1-alpha) + new Q_value * (alpha) """
+            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] +
+                (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state]))))
+            Qtable[state_previous][action_previous] = Q_hat
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
