@@ -34,7 +34,7 @@ class LearningAgent(Agent):
         self.counter += 1
         self.epsilon = 0.9 / (1+(math.exp(-(self.counter-50)))) #After 50 movements, random actions will be occuring at 50%
         self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
-
+        self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-50)))) #alpha ranges from 1 to 0.25
         # TODO: Select action according to your policy
         if Qtable.has_key(self.state) :  #check if state has been encountered before
             action_q = Qtable[self.state]
