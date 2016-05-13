@@ -15,6 +15,7 @@ class LearningAgent(Agent):
         # TODO: Initialize any additional variables here
         self.Qtable = {}
         self.counter = 0  #counts number of steps learned
+        self.steps_counter = 0
         self.gamma = 0  #discounting rate of future rewards
         self.epsilon = 0.9 / (1+(math.exp(-(self.counter-50))))
         """The Logistic function ranges from 0 to 0.9 as the number of total
@@ -26,16 +27,19 @@ class LearningAgent(Agent):
         self.alpha = 1 - ( 0.75 / (1 + math.exp(-(self.counter-200)))) #alpha ranges from 1 to 0.25
         """The learning rate will start at 1 and move towards 0.25 as the number of steps increases.
         A steep drop in learning rate will occur at about 200 steps."""
+        self.reward_list = []
+        self.action_list = []
     def reset(self, destination=None):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
+        self.steps_counter = 0
 
     def update(self, t):
         #Remember the previous state
-        if self.t != 0 :
+        if self.steps_counter != 0 :
             state_previous = self.state
-            reward_previous = reward
-            action_previous = action
+            reward_previous = reward_list[-1]
+            action_previous = action_list[-1]
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
@@ -60,13 +64,16 @@ class LearningAgent(Agent):
 
         # Execute action and get reward
         reward = self.env.act(self, action)
+        self.reward_list.append(reward)
+        self.action_list.append(action)
 
         # TODO: Learn policy based on state, action, reward
-        if state.t != 0 :
+        if self.steps_counter != 0 :
             """Q_hat = old Q_hat * (1-alpha) + new Q_value * (alpha) """
-            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] +
-                (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state]))))
+            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] + (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state]))))
             Qtable[state_previous][action_previous] = Q_hat
+
+        self.steps_counter += 1
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
