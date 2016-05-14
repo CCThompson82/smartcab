@@ -33,6 +33,7 @@ class LearningAgent(Agent):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
         self.steps_counter = 0
+        print self.Qtable
 
     def update(self, t):
         #Remember the previous state
@@ -49,7 +50,10 @@ class LearningAgent(Agent):
 
         # TODO: Update state
         #Sense the current state:
-        self.state = (("directions",self.next_waypoint),("light",inputs['light']), ("oncoming", inputs['oncoming']), ("left",inputs['left']))
+        self.state = (  ("directions",self.next_waypoint),
+                        ("light",inputs['light']),
+                        ("oncoming", inputs['oncoming']),
+                        ("left",inputs['left']))
 
         # TODO: Select action according to your policy
         if Qtable.has_key(self.state) :  #check if state has been encountered before
@@ -69,8 +73,10 @@ class LearningAgent(Agent):
 
         # TODO: Learn policy based on state, action, reward
         if self.steps_counter != 0 :
-            """Q_hat = old Q_hat * (1-alpha) + new Q_value * (alpha) """
-            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] + (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state].values()))))
+            """Bellman equation?"""
+            Q_hat = (1-self.alpha)*Qtable[state_previous][action_previous] + \
+            (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state].values()))))
+
             Qtable[state_previous][action_previous] = Q_hat
 
         self.steps_counter += 1
