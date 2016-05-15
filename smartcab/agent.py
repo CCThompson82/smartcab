@@ -31,6 +31,7 @@ class LearningAgent(Agent):
         A steep drop in learning rate will occur at about 200 steps."""
         self.reward_previous = None
         self.action_previous = None
+        self.state_previous = None
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -69,18 +70,18 @@ class LearningAgent(Agent):
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
-        #Store actions, state and reward as previous_
-        state_previous = self.state
-        action_previous = action
-        reward_previous = reward
-
         # TODO: Learn policy based on state, action, reward
-        if self.steps_counter != 0 :  #make sure it is not the first step in a trial.
+        if self.steps_counter > 0 :  #make sure it is not the first step in a trial.
             """Bellman equation"""
-            Q_hat = Qtable[state_previous][action_previous]
-            Q_hat = (1-self.alpha)*Q_hat + (self.alpha * (reward_previous + (self.gamma * max(Qtable[self.state].values()))))
-            Qtable[state_previous][action_previous] = Q_hat
+            Q_hat = Qtable[self.state_previous][self.action_previous]
+            Q_hat = (1-self.alpha)*Q_hat + (self.alpha * (self.reward_previous + (self.gamma * max(Qtable[self.state].values()))))
+            Qtable[self.state_previous][self.action_previous] = Q_hat
             self.Qtable = Qtable
+        #Store actions, state and reward as previous_
+        self.state_previous = self.state
+        self.action_previous = action
+        self.reward_previous = reward
+        self.steps_counter += 1
 
 def run():
     """Run the agent for a finite number of trials."""
@@ -91,8 +92,8 @@ def run():
     e.set_primary_agent(a, enforce_deadline=True)  # set agent to track
 
     # Now simulate it
-    sim = Simulator(e, update_delay=1.0)  # reduce update_delay to speed up simulation
-    sim.run(n_trials=20)  # press Esc or close pygame window to quit
+    sim = Simulator(e, update_delay=.1)  # reduce update_delay to speed up simulation
+    sim.run(n_trials=50)  # press Esc or close pygame window to quit
 
 if __name__ == '__main__':
     run()
