@@ -17,18 +17,16 @@ class LearningAgent(Agent):
         self.steps_counter = 0
         self.gamma = 0  #discounting rate of future rewards
         #self.gamma = 1
-        self.epsilon = .95
-        #self.epsilon = 0.9 / (1+( math.exp(-(self.lesson_counter-50))))
+        #self.epsilon = .95
+        self.epsilon = 0.95 / (1+( math.exp(-(self.lesson_counter-40))))
         """The Logistic function ranges from 0 to 0.9 as the number of total
-        steps increases during the learning process.  At about 50 steps, the 'logistic'
-        part of the curve will be implemented and random actions will give way to
+        steps increases during the learning process.  Random actions will give way to
         the 'best' action, gradually.  However, I have decided to limit the chance
-        of choosing the 'best' action at 90%, as to introduce opportunity to break
+        of choosing the 'best' action at 95%, as to introduce opportunity to break
         free from any local minimum Q_value(state, action) that may be present"""
-        self.alpha = 1
-        #self.alpha = 1 - ( 0.5 / (1 + math.exp(-(self.lesson_counter-200)))) #alpha ranges from 1 to 0.5
-        """The learning rate will start at 1 and move towards 0.25 as the number of steps increases.
-        A steep drop in learning rate will occur at about 200 steps."""
+        #self.alpha = 1
+        self.alpha = 1 - ( 0.5 / (1 + math.exp(-(self.lesson_counter-200)))) #alpha ranges from 1 to 0.5
+        """The learning rate will start at 1 and move towards 0.5 as the number of steps increases."""
         self.reward_previous = None
         self.action_previous = None
         self.state_previous = None
