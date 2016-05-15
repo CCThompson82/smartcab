@@ -37,7 +37,7 @@ class LearningAgent(Agent):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
         self.steps_counter = 0
-        print self.Qtable
+        #print self.Qtable [not needed any longer]
 
     def update(self, t):
         # Gather inputs for current state
