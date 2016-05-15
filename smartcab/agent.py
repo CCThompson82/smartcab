@@ -18,14 +18,14 @@ class LearningAgent(Agent):
         self.gamma = 0  #discounting rate of future rewards
         #self.gamma = 1
         #self.epsilon = .95
-        self.epsilon = 0.95 / (1+( math.exp(-(self.lesson_counter-40))))
+        self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
         """The Logistic function ranges from 0 to 0.9 as the number of total
         steps increases during the learning process.  Random actions will give way to
         the 'best' action, gradually.  However, I have decided to limit the chance
         of choosing the 'best' action at 95%, as to introduce opportunity to break
         free from any local minimum Q_value(state, action) that may be present"""
         #self.alpha = 1
-        self.alpha = 1 - ( 0.5 / (1 + math.exp(-(self.lesson_counter-200)))) #alpha ranges from 1 to 0.5
+        self.alpha = 1 - ( 0.5 / (1 + math.exp(-0.05*(self.lesson_counter-100)))) #alpha ranges from 1 to 0.5
         """The learning rate will start at 1 and move towards 0.5 as the number of steps increases."""
         self.reward_previous = None
         self.action_previous = None
@@ -91,7 +91,7 @@ def run():
 
     # Now simulate it
     sim = Simulator(e, update_delay=.1)  # reduce update_delay to speed up simulation
-    sim.run(n_trials=50)  # press Esc or close pygame window to quit
+    sim.run(n_trials=100)  # press Esc or close pygame window to quit
 
 if __name__ == '__main__':
     run()
