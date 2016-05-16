@@ -12,19 +12,20 @@ class LearningAgent(Agent):
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
 
         # TODO: Initialize any additional variables here
-        self.Qtable = {}
+        self.Qtable = {}  #empty Qtable to be filled during update
         self.lesson_counter = 0  #counts number of steps learned
-        self.steps_counter = 0
+        self.steps_counter = 0 #counts steps in the trial
+        #self.Q_init = 0  #initial Q^ values for new state-actions not observed yet.
+        self.Q_init = 13 #initial Q^ values for new state-actions not observed yet.
+        #self.gamma = 0
         self.gamma = 0.1  #discounting rate of future rewards
-        #self.gamma = 1
         #self.epsilon = .95
         self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
         """The output for the Logistic function for epsilon ranges from 0.75 to 0.99, and increases as the number of total
         steps increases during the learning process.  Random actions will give way to
         the 'best' action, gradually, but will never exceed 99%."""
-        #self.alpha = 1
-        self.alpha = 1 - ( 0.5 / (1 + math.exp(-0.05*(self.lesson_counter-100)))) #alpha ranges from 1 to 0.5
-        """The learning rate will start at 1 and move towards 0.5 as the number of steps increases."""
+        self.alpha = 1
+        #self.alpha = 1 - ( 0.5 / (1 + math.exp(-0.05*(self.lesson_counter-100)))) #alpha ranges from 1 to 0.5
         self.reward_previous = None
         self.action_previous = None
         self.state_previous = None
@@ -40,7 +41,7 @@ class LearningAgent(Agent):
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
         deadline = self.env.get_deadline(self)
-        self.lesson_counter += 1
+        self.lesson_counter += 1  #count steps in total run
 
         #Define the current state based on inputs sensed
         self.state = (  ("directions",self.next_waypoint),
@@ -51,14 +52,14 @@ class LearningAgent(Agent):
         # TODO: Select action according to your policy
         Qtable = self.Qtable #cover up Qtable variable with current object.Qtable feature to make syntax easier in this suite
         if Qtable.has_key(self.state) :  #check if state has been encountered before or not
-            if random.random() < self.epsilon :  #if epsilon is not eclipsed by a random float, then choose the action with the largest Qhat.  If epsilon is 1, then best option is always chosen as it cannot be eclipsed
-                #pull the best action, or best actions if there are more than one with a max Qhat value
+            if random.random() < self.epsilon :  #if epsilon is not eclipsed by a random float, then choose the action with the largest Q^.  If epsilon is 1, then best option is always chosen as it cannot be eclipsed
+                #pull the best action, or best actions if there are more than one with a max Q^ value
                 argmax_actions = {action:Qhat for action, Qhat in Qtable[self.state].items() if Qhat == max(Qtable[self.state].values())}
-                action = random.choice(argmax_actions.keys())
-            else : # if random float eclipses epsilon, choose a random action.  New feature idea: choose an action that is not the current argmax action
+                action = random.choice(argmax_actions.keys())  #note if only 1 action in this list, then it is only choice for random.choice
+            else : # if random float eclipses epsilon, choose a random action.
                 action = random.choice([None, 'forward', 'left', 'right'])
         else :  #state has never been encountered
-            Qtable.update({self.state : {None : 0, 'forward' : 0, 'left' : 0 , 'right' : 0}}) #Add state to Qtable dictionary
+            Qtable.update({self.state : {None : self.Q_init, 'forward' : self.Q_init, 'left' : self.Q_init, 'right' : self.Q_init}}) #Add state to Qtable dictionary
             action = random.choice([None, 'forward', 'left', 'right'])  #choose one of the actions at random
 
         # Execute action and get reward
@@ -73,7 +74,7 @@ class LearningAgent(Agent):
             Q_hat = Q_hat + (self.alpha * (self.reward_previous + (self.gamma * (max(Qtable[self.state].values()) - Q_hat)))
             Qtable[self.state_previous][self.action_previous] = Q_hat
             self.Qtable = Qtable
-        #Store actions, state and reward as previous_
+        #Store actions, state and reward as previous_ for use in the next cycle
         self.state_previous = self.state
         self.action_previous = action
         self.reward_previous = reward
