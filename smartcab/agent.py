@@ -17,10 +17,10 @@ class LearningAgent(Agent):
         self.steps_counter = 0 #counts steps in the trial
         #self.Q_init = 0  #initial Q^ values for new state-actions not observed yet.
         self.Q_init = 13 #initial Q^ values for new state-actions not observed yet.
-        #self.gamma = 0
-        self.gamma = 0.1  #discounting rate of future rewards
-        #self.epsilon = .95
-        self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
+        self.gamma = 0
+        #self.gamma = 0.1  #discounting rate of future rewards
+        self.epsilon = .95
+        #self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
         """The output for the Logistic function for epsilon ranges from 0.75 to 0.99, and increases as the number of total
         steps increases during the learning process.  Random actions will give way to
         the 'best' action, gradually, but will never exceed 99%."""
@@ -71,7 +71,7 @@ class LearningAgent(Agent):
         if self.steps_counter > 0 :  #make sure it is not the first step in a trial.
             """Bellman equation"""
             Q_hat = Qtable[self.state_previous][self.action_previous]
-            Q_hat = Q_hat + (self.alpha * (self.reward_previous + (self.gamma * (max(Qtable[self.state].values()) - Q_hat)))
+            Q_hat = Q_hat + (self.alpha * (self.reward_previous + (self.gamma * (max(Qtable[self.state].values()))) - Q_hat))
             Qtable[self.state_previous][self.action_previous] = Q_hat
             self.Qtable = Qtable
         #Store actions, state and reward as previous_ for use in the next cycle
