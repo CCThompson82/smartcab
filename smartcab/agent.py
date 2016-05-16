@@ -15,17 +15,21 @@ class LearningAgent(Agent):
         self.Qtable = {}  #empty Qtable to be filled during update
         self.lesson_counter = 0  #counts number of steps learned
         self.steps_counter = 0 #counts steps in the trial
-        self.Q_init = 0  #initial Q^ values for new state-actions not observed yet.
-        #self.Q_init = 13 #initial Q^ values for new state-actions not observed yet.
-        #self.gamma = 0
-        self.gamma = 0.1  #discounting rate of future rewards
-        #self.epsilon = .95
-        self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
+
+        #self.Q_init = 0  #initial Q^ values for new state-actions not observed yet.
+        self.Q_init = 13 #initial Q^ values for new state-actions not observed yet.
+
+        self.gamma = 0
+        #self.gamma = 0.1  #discounting rate of future rewards
+
+        self.epsilon = 1
+        #self.epsilon = 0.75 + (0.24 / (1+( math.exp(-0.1*(self.lesson_counter-40)))))
         """The output for the Logistic function for epsilon ranges from 0.75 to 0.99, and increases as the number of total
         steps increases during the learning process.  Random actions will give way to
         the 'best' action, gradually, but will never exceed 99%."""
-        #self.alpha = 1
-        self.alpha = 1 - ( 0.5 / (1 + math.exp(-0.05*(self.lesson_counter-100)))) #alpha ranges from 1 to 0.5
+        self.alpha = 1
+        #self.alpha = 1 - ( 0.5 / (1 + math.exp(-0.05*(self.lesson_counter-100)))) #alpha ranges from 1 to 0.5
+
         self.reward_previous = None
         self.action_previous = None
         self.state_previous = None
