@@ -70,7 +70,7 @@ class LearningAgent(Agent):
         if self.steps_counter > 0 :  #make sure it is not the first step in a trial.
             """Bellman equation"""
             Q_hat = Qtable[self.state_previous][self.action_previous]
-            Q_hat = (1-self.alpha)*Q_hat + (self.alpha * (self.reward_previous + (self.gamma * max(Qtable[self.state].values()))))
+            Q_hat = Q_hat + (self.alpha * (self.reward_previous + (self.gamma * (max(Qtable[self.state].values()) - Q_hat)))
             Qtable[self.state_previous][self.action_previous] = Q_hat
             self.Qtable = Qtable
         #Store actions, state and reward as previous_
