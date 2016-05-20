@@ -197,7 +197,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Identify-and-update-state">Identify and update state<a class="anchor-link" href="#Identify-and-update-state">&#182;</a></h2><p>Within the simulation, the possible variables that the agent can sense are the next way_point ('forward', 'left', or 'right') which serve as a heading towards the destination, the traffic light signal ('red' or 'green'), or the heading of any traffic that is oncoming, approaching from the left, or approaching from the right (if no traffic is approaching from a direction, the variable is listed as None).</p>
+<h2 id="Identify-and-update-state">Identify and update state<a class="anchor-link" href="#Identify-and-update-state">&#182;</a></h2><p>Within the simulation, the possible variables that the agent can sense are the next way_point ('forward', 'left', or 'right') which serve as a heading towards the destination, the traffic light signal ('red' or 'green'), the heading of any traffic that is oncoming, approaching from the left, or approaching from the right (if no traffic is approaching from a direction, the variable is listed as None) and the trial deadline count for reaching the destination.</p>
 <p>For the purposes of my learning agent, I chose to monitor a state composed of four variables:</p>
 
 <pre><code>    next way_point ("Directions");
@@ -209,7 +209,7 @@ div#notebook {
     traffic that is approaching from the left ("left") 
 
 </code></pre>
-<p>I did not choose to monitor traffic from the right, as theoretically this information is redundant with the traffic light color.  Assuming an oncoming agent obeys traffic laws and does not run a red light, there is no situation that could be altered by the presence of a car from the right.  For instance, if my agent's light is green, the approaching agent will have a red light and must give right of way if turning right.  If my agent's light is red, then the only viable MOVEMENT is a right turn which would be unaffected by a car approaching from the right.  Thus inclusion of this variable in the state would not provide any value, but would exponentially increase the number of learning steps needed for Q-learning convergence.</p>
+<p>I did not choose to monitor traffic from the right, as theoretically this information is redundant with the traffic light color.  Assuming an oncoming agent obeys traffic laws and does not run a red light, there is no situation that could be altered by the presence of a car from the right.  For instance, if my agent's light is green, the approaching agent will have a red light and must give right of way if turning right.  If my agent's light is red, then the only viable MOVEMENT is a right turn which would be unaffected by a car approaching from the right.  Thus inclusion of this variable in the state would not provide any value, but would exponentially increase the number of learning steps needed for Q-learning convergence.  To this point, I also chose to exclude the trial deadline from the state recognition.  Due to the rules of the current simulation, I cannot think of a situation in which policy would change during the late stages of a trial versus early stages.  Inclusion of this feature would drastically increase the number of training examples needed for convergence to the optimal policy.  Perhaps if the simulation were to be changed to allow an agent to actually move through a red light (incurring a penalty), then the optimal policy could reward breaking traffic laws if the deadline to destination was approaching.  However, a the simulation is set-up knowledge of the deadline is not useful and would simply perturb the curse of dimensionality.</p>
 <p>When implemented with 'action' set to random.choice as described above, the current state is measured and displayed in the simulation header during each step, though the sensed state has no link to the agent's choice of action.  The link between policy and exploration was created in the next step, via implementation of the Q-learning algorithm.</p>
 
 </div>
@@ -260,19 +260,6 @@ Importantly, this type of strategy is usually only suitable for agents acting in
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
